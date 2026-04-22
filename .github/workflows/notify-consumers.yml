@@ -8,10 +8,12 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         consumer:
           - automatic-ripping-machine-transcoder
-          # arm-neu and arm-ui added in Phase 2
+          - automatic-ripping-machine-neu
+          - automatic-ripping-machine-ui
     steps:
       - name: Dispatch contracts-bump-available to ${{ matrix.consumer }}
         uses: peter-evans/repository-dispatch@v3
