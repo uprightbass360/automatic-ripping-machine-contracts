@@ -9,6 +9,8 @@ from arm_contracts.enums import (
 from arm_contracts.overrides import (
     SharedOverrides,
     TierOverrides,
+    TierOverridesByName,
+    TranscodeOverrides,
 )
 
 __all__ = [
@@ -18,5 +20,7 @@ __all__ = [
     "SharedOverrides",
     "TierName",
     "TierOverrides",
+    "TierOverridesByName",
+    "TranscodeOverrides",
     "VideoType",
 ]
