@@ -23,10 +23,12 @@ def test_job_status_is_str_enum():
 def test_disctype_members():
     from arm_contracts import Disctype
     assert set(Disctype) == {
-        Disctype.dvd, Disctype.bluray, Disctype.uhd,
-        Disctype.music, Disctype.data,
+        Disctype.dvd, Disctype.bluray, Disctype.bluray4k,
+        Disctype.music, Disctype.data, Disctype.unknown,
     }
     assert Disctype.dvd == "dvd"
+    assert Disctype.bluray4k == "bluray4k"
+    assert Disctype.unknown == "unknown"
 
 
 def test_video_type_members():
@@ -38,6 +40,10 @@ def test_video_type_members():
 def test_tier_name_members():
     from arm_contracts import TierName
     assert set(TierName) == {TierName.dvd, TierName.bluray, TierName.uhd}
+    # Value assertions: the preset system uses these exact strings as dict keys
+    assert TierName.dvd == "dvd"
+    assert TierName.bluray == "bluray"
+    assert TierName.uhd == "uhd"
 
 
 def test_scheme_slug_members():
@@ -45,3 +51,6 @@ def test_scheme_slug_members():
     assert set(SchemeSlug) == {
         SchemeSlug.software, SchemeSlug.nvidia, SchemeSlug.intel, SchemeSlug.amd,
     }
+    # Value assertions: these drive GPU_VENDOR routing in the transcoder
+    assert SchemeSlug.software == "software"
+    assert SchemeSlug.nvidia == "nvidia"
