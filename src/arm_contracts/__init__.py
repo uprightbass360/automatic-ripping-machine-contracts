@@ -6,6 +6,10 @@ from arm_contracts.enums import (
     TierName,
     VideoType,
 )
+from arm_contracts.job_config import (
+    PRESET_SLUG_PATTERN,
+    TranscodeJobConfig,
+)
 from arm_contracts.overrides import (
     SharedOverrides,
     TierOverrides,
@@ -16,11 +20,13 @@ from arm_contracts.overrides import (
 __all__ = [
     "Disctype",
     "JobStatus",
+    "PRESET_SLUG_PATTERN",
     "SchemeSlug",
     "SharedOverrides",
     "TierName",
     "TierOverrides",
     "TierOverridesByName",
+    "TranscodeJobConfig",
     "TranscodeOverrides",
     "VideoType",
 ]
