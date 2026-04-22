@@ -2,8 +2,13 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+.hypothesis/
 .coverage
 coverage.xml
+dist/
+build/
 .venv/
 .vscode/
 .idea/
+.DS_Store
+.claude/
