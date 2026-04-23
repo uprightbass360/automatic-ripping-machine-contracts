@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.2.0...v0.2.1) (2026-04-23)
+
+
+### Bug Fixes
+
+* drop Python 3.11 requirement for arm-neu 3.10 base-image compat ([461f5c3](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/461f5c36ae2828767eb10442cecb4afe4a91d162))
+
 ## [0.2.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.1.0...v0.2.0) (2026-04-22)
 
 
