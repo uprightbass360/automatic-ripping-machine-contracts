@@ -25,17 +25,23 @@ class JobStatus(_StrValueEnum):
     Members that persist to transcoder TranscodeJobDB.status:
       pending, processing, completed, failed, cancelled.
 
-    Callback-only member (sent to arm-neu's transcode-callback endpoint
+    Callback-only members (sent to arm-neu's transcode-callback endpoint
     but NEVER persisted in the transcoder's own JobStatus column):
       partial - emitted when some tracks succeeded and others failed;
-      the transcoder always stores COMPLETED for that outcome and lets
-      arm-neu decide how to represent it.
+        the transcoder always stores COMPLETED for that outcome and lets
+        arm-neu decide how to represent it.
+      transcoding - informational fire-and-forget heartbeat sent when a
+        job leaves the queue and starts processing. The transcoder stores
+        PROCESSING for that state; arm-neu maps the wire string to its
+        own JobState.TRANSCODE_ACTIVE so the dashboard reflects the
+        active phase.
     """
     pending = "pending"
     processing = "processing"
     completed = "completed"
     failed = "failed"
-    partial = "partial"          # callback wire only
+    partial = "partial"              # callback wire only
+    transcoding = "transcoding"      # callback wire only (informational)
     cancelled = "cancelled"
 
 
