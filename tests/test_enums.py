@@ -9,7 +9,21 @@ def test_job_status_members():
     assert JobStatus.completed == "completed"
     assert JobStatus.failed == "failed"
     assert JobStatus.partial == "partial"
+    assert JobStatus.transcoding == "transcoding"
     assert JobStatus.cancelled == "cancelled"
+
+
+def test_job_status_wire_only_members_validate_in_callback_payload():
+    """partial + transcoding both validate in TranscodeCallbackPayload.
+
+    Both are wire-only members (the transcoder never persists them) but
+    they are sent to arm-neu's transcode-callback endpoint, so the typed
+    payload must accept them.
+    """
+    from arm_contracts import JobStatus, TranscodeCallbackPayload
+    for status in (JobStatus.partial, JobStatus.transcoding):
+        p = TranscodeCallbackPayload(status=status)
+        assert p.status == status
 
 
 def test_job_status_is_str_enum():
