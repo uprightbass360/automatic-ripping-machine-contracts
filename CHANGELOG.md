@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.3.0...v0.4.0) (2026-04-26)
+
+
+### Features
+
+* **enums:** add JobStatus.transcoding wire-only callback member ([4dc451b](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/4dc451b8bbd333ab33a24bd913e20fb047246df9))
+
 ## [0.3.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.2.1...v0.3.0) (2026-04-26)
 
 
