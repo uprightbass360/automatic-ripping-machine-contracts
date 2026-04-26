@@ -82,6 +82,16 @@ def test_path_strips_nulls_and_controls():
     assert p.path == "ok/path"
 
 
+def test_body_message_path_explicit_none_round_trip():
+    """Explicit None in the input survives as None (validator early-exit branch)."""
+    p = WebhookPayload.model_validate(
+        {"title": "x", "job_id": 1, "body": None, "message": None, "path": None}
+    )
+    assert p.body is None
+    assert p.message is None
+    assert p.path is None
+
+
 def test_effective_body_prefers_body_over_message():
     p = WebhookPayload(title="x", job_id=1, body="from-body", message="from-message")
     assert p.effective_body == "from-body"
