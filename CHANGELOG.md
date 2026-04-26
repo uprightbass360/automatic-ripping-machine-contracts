@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.2.1...v0.3.0) (2026-04-26)
+
+
+### Features
+
+* **webhook:** add WebhookPayload + TranscodeCallbackPayload contracts ([f47df4a](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/f47df4a23f91f909f3ce66b9c4016ee3551cfcf4))
+
 ## [0.2.1](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.2.0...v0.2.1) (2026-04-23)
 
 
