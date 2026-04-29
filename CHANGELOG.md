@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.4.0...v0.5.0) (2026-04-29)
+
+
+### Features
+
+* add Job, JobSummary, Track, TrackCounts, JobProgressState contracts ([ece12c0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/ece12c08f7ce77042d7693d8c89ab81c0650b6d6))
+
 ## [0.4.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.3.0...v0.4.0) (2026-04-26)
 
 
