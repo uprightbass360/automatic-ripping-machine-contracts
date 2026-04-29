@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.5.0...v0.5.1) (2026-04-29)
+
+
+### Bug Fixes
+
+* **job:** allow JobSummary to validate ORM rows ([c326774](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/c3267741bcd9e3cf47be8b85066adbd929d9d754))
+
 ## [0.5.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.4.0...v0.5.0) (2026-04-29)
 
 
