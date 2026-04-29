@@ -144,7 +144,7 @@ class JobSummary(BaseModel):
     badge needs to render. Producer is `_job_summary` in
     arm-neu/arm/api/v1/drives.py.
     """
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
 
     job_id: int
     title: str | None = None
