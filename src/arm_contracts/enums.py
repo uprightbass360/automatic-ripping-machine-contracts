@@ -82,3 +82,20 @@ class SchemeSlug(_StrValueEnum):
     nvidia = "nvidia"
     intel = "intel"
     amd = "amd"
+
+
+class TranscodePhase(_StrValueEnum):
+    """Sub-status describing what the transcoder is doing inside JobStatus.processing.
+
+    JobStatus is a coarse lifecycle (pending/processing/completed/failed);
+    phase is a fine-grained progress signal so the UI can show "Copying source
+    files" or "Finalizing" instead of an empty 0% bar during periods where no
+    encoder progress is being reported. Designed for extension - new members
+    can be added (e.g. extracting_audio, verifying_output) without breaking
+    older consumers; safe consumers treat unknown values as a generic active
+    state.
+    """
+    queued = "queued"
+    copying_source = "copying_source"
+    encoding = "encoding"
+    finalizing = "finalizing"

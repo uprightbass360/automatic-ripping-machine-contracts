@@ -8,6 +8,7 @@ from arm_contracts.enums import (
     JobStatus,
     SchemeSlug,
     TierName,
+    TranscodePhase,
     VideoType,
 )
 from arm_contracts.job import (
@@ -52,6 +53,7 @@ __all__ = [
     "TranscodeCallbackPayload",
     "TranscodeJobConfig",
     "TranscodeOverrides",
+    "TranscodePhase",
     "VideoType",
     "WebhookPayload",
     "WebhookTrackMeta",
