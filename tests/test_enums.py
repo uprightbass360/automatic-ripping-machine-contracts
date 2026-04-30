@@ -68,3 +68,26 @@ def test_scheme_slug_members():
     # Value assertions: these drive GPU_VENDOR routing in the transcoder
     assert SchemeSlug.software == "software"
     assert SchemeSlug.nvidia == "nvidia"
+
+
+def test_transcode_phase_members():
+    from arm_contracts import TranscodePhase
+    assert set(TranscodePhase) == {
+        TranscodePhase.queued,
+        TranscodePhase.copying_source,
+        TranscodePhase.encoding,
+        TranscodePhase.finalizing,
+    }
+    # Value assertions: the UI compares against these wire strings to pick
+    # the right progress widget rendering
+    assert TranscodePhase.queued == "queued"
+    assert TranscodePhase.copying_source == "copying_source"
+    assert TranscodePhase.encoding == "encoding"
+    assert TranscodePhase.finalizing == "finalizing"
+
+
+def test_transcode_phase_is_str_enum():
+    """Phase members must be usable as plain strings (StrEnum semantics)."""
+    from arm_contracts import TranscodePhase
+    assert isinstance(TranscodePhase.encoding, str)
+    assert f"phase={TranscodePhase.copying_source}" == "phase=copying_source"
