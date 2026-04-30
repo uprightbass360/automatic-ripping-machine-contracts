@@ -240,3 +240,18 @@ def test_progress_state_round_trip():
             assert dumped[key] == value
         else:
             assert dumped[key] == value
+
+
+def test_progress_state_accepts_fractional_percentages():
+    """rip_progress and music_progress are percentages rounded to 1 decimal
+    place by the parser, so the contract must accept floats - regression
+    against a hotfix where typing them as int caused 500s on every
+    progress-state poll once a non-zero fractional value flowed through.
+    """
+    p = JobProgressState(
+        track_counts=TrackCounts(total=3, ripped=0),
+        rip_progress=6.4,
+        music_progress=42.7,
+    )
+    assert p.rip_progress == 6.4
+    assert p.music_progress == 42.7
