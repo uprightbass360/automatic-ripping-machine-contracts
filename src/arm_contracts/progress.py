@@ -29,11 +29,13 @@ class JobProgressState(BaseModel):
     logfile: str | None = None
     no_of_titles: int | None = None
 
-    # MakeMKV (video) progress.
-    rip_progress: int | None = None
+    # MakeMKV (video) progress. `rip_progress` is a percentage 0-100,
+    # rounded to 1 decimal place by the parser, so it must be float.
+    rip_progress: float | None = None
     rip_stage: str | None = None
     tracks_ripped_realtime: int | None = None
 
-    # abcde (music) progress.
-    music_progress: int | None = None
+    # abcde (music) progress. `music_progress` is a percentage 0-100,
+    # rounded to 1 decimal place by the parser, so it must be float.
+    music_progress: float | None = None
     music_stage: str | None = None
