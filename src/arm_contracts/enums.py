@@ -99,3 +99,78 @@ class TranscodePhase(_StrValueEnum):
     copying_source = "copying_source"
     encoding = "encoding"
     finalizing = "finalizing"
+
+
+class JobState(_StrValueEnum):
+    """Possible states for arm-neu Job.status (the ripper-side lifecycle).
+
+    Distinct from JobStatus (transcoder-side). Some values share string
+    representation (VIDEO_RIPPING and AUDIO_RIPPING both serialize as
+    'ripping'; VIDEO_WAITING and MANUAL_WAIT_STARTED both as 'waiting').
+    Python's enum machinery treats these as aliases - the second name
+    resolves to the first member. This is verbatim preservation of the
+    pre-existing arm-neu enum; consumers infer audio-vs-video context
+    from Job.disctype.
+    """
+    SUCCESS = "success"
+    FAILURE = "fail"
+    MANUAL_WAIT_STARTED = "waiting"
+    IDENTIFYING = "identifying"
+    IDLE = "ready"
+    VIDEO_RIPPING = "ripping"
+    VIDEO_WAITING = "waiting"      # alias of MANUAL_WAIT_STARTED
+    VIDEO_INFO = "info"
+    AUDIO_RIPPING = "ripping"      # alias of VIDEO_RIPPING
+    COPYING = "copying"
+    EJECTING = "ejecting"
+    TRANSCODE_ACTIVE = "transcoding"
+    TRANSCODE_WAITING = "waiting_transcode"
+
+
+class SourceType(_StrValueEnum):
+    """Job input source classification."""
+    disc = "disc"
+    folder = "folder"
+
+
+class TrackStatus(_StrValueEnum):
+    """Per-track lifecycle.
+
+    Designed for extension - new members can be added (e.g. queued,
+    verifying) without breaking older consumers; safe consumers treat
+    unknown values as a generic active state.
+
+    Note: ``success`` is the rip-phase terminal; ``transcoded`` is the
+    transcode-phase terminal. The two are intentionally distinct so the
+    UI can color-code which lifecycle phase finished.
+    """
+    pending = "pending"
+    ripping = "ripping"
+    encoding = "encoding"
+    success = "success"
+    transcoded = "transcoded"
+    transcode_failed = "transcode_failed"
+
+
+class WebhookEventType(_StrValueEnum):
+    """Webhook payload classification.
+
+    Single member today; the enum exists to close the wire contract so
+    future event types are an explicit, breaking-change addition rather
+    than a silent string typo.
+    """
+    info = "info"
+
+
+class SkipReason(_StrValueEnum):
+    """Reason a Track was filtered out of the rip set.
+
+    Promoted from the previous typing.Literal alias in arm_contracts.track
+    so the value set is introspectable and matches the _StrValueEnum
+    pattern used by every other classification field on the wire.
+    """
+    too_short = "too_short"
+    too_long = "too_long"
+    makemkv_skipped = "makemkv_skipped"
+    user_disabled = "user_disabled"
+    below_main_feature = "below_main_feature"

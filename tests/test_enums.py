@@ -91,3 +91,58 @@ def test_transcode_phase_is_str_enum():
     from arm_contracts import TranscodePhase
     assert isinstance(TranscodePhase.encoding, str)
     assert f"phase={TranscodePhase.copying_source}" == "phase=copying_source"
+
+
+def test_jobstate_string_serialization():
+    from arm_contracts.enums import JobState
+    assert str(JobState.SUCCESS) == "success"
+    assert f"{JobState.TRANSCODE_WAITING}" == "waiting_transcode"
+    # alias check - documents pre-existing collision
+    assert JobState.AUDIO_RIPPING is JobState.VIDEO_RIPPING
+
+
+def test_sourcetype_round_trip():
+    from arm_contracts.enums import SourceType
+    assert SourceType("disc") is SourceType.disc
+    assert SourceType("folder") is SourceType.folder
+
+
+def test_trackstatus_members():
+    from arm_contracts.enums import TrackStatus
+    expected = {"pending", "ripping", "encoding", "success",
+                "transcoded", "transcode_failed"}
+    assert {m.value for m in TrackStatus} == expected
+
+
+def test_webhookeventtype_single_member():
+    from arm_contracts.enums import WebhookEventType
+    assert {m.value for m in WebhookEventType} == {"info"}
+
+
+def test_skipreason_members():
+    from arm_contracts.enums import SkipReason
+    expected = {"too_short", "too_long", "makemkv_skipped",
+                "user_disabled", "below_main_feature"}
+    assert {m.value for m in SkipReason} == expected
+
+
+def test_skipreason_reexported_from_track_module():
+    """Backwards compat: arm_contracts.track.SkipReason still resolves."""
+    from arm_contracts.track import SkipReason as TrackSkipReason
+    from arm_contracts.enums import SkipReason as EnumsSkipReason
+    assert TrackSkipReason is EnumsSkipReason
+
+
+def test_track_skip_reason_field_accepts_valid_enum():
+    from arm_contracts import Track
+    from arm_contracts.enums import SkipReason
+    t = Track(track_id=1, job_id=1, skip_reason=SkipReason.too_short)
+    assert t.skip_reason is SkipReason.too_short or t.skip_reason == "too_short"
+
+
+def test_track_skip_reason_field_rejects_invalid():
+    import pytest
+    from pydantic import ValidationError
+    from arm_contracts import Track
+    with pytest.raises(ValidationError):
+        Track(track_id=1, job_id=1, skip_reason="not_a_real_reason")
