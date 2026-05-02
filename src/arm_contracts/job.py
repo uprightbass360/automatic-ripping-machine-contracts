@@ -18,6 +18,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
+from arm_contracts.expected_title import ExpectedTitle
 from arm_contracts.track import TrackCounts
 
 
@@ -135,6 +136,10 @@ class Job(BaseModel):
 
     # Progress, only present on endpoints that compute it.
     track_counts: TrackCounts | None = None
+
+    # Metadata-derived expected titles, populated at identification time.
+    # Empty list means identification did not produce runtime-bearing data.
+    expected_titles: list[ExpectedTitle] = []
 
 
 class JobSummary(BaseModel):
