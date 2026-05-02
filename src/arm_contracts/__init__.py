@@ -11,6 +11,7 @@ from arm_contracts.enums import (
     TranscodePhase,
     VideoType,
 )
+from arm_contracts.expected_title import ExpectedTitle
 from arm_contracts.job import (
     Job,
     JobSummary,
@@ -37,6 +38,7 @@ from arm_contracts.webhook import (
 
 __all__ = [
     "Disctype",
+    "ExpectedTitle",
     "Job",
     "JobProgressState",
     "JobStatus",
