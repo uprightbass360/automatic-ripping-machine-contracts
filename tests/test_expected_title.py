@@ -55,3 +55,28 @@ def test_job_round_trip_with_expected_titles():
     rebuilt = Job.model_validate(dumped)
     assert len(rebuilt.expected_titles) == 1
     assert rebuilt.expected_titles[0].runtime_seconds == 8880
+
+
+def test_expected_title_from_attributes_orm_shape():
+    """from_attributes=True allows model_validate to read attribute-style
+    inputs like SQLAlchemy ORM objects. A8 depends on this for
+    _job_to_dict / list comprehension over job.expected_titles."""
+    from types import SimpleNamespace
+
+    orm_like = SimpleNamespace(
+        source="omdb",
+        title="Inception",
+        season=None,
+        episode_number=None,
+        external_id="tt1375666",
+        runtime_seconds=8523,  # fractional, not 8520
+        # Extra ORM-internal fields that should be silently ignored:
+        id=42,
+        job_id=99,
+        fetched_at="2026-05-01T12:00:00",
+    )
+    et = ExpectedTitle.model_validate(orm_like)
+    assert et.source == "omdb"
+    assert et.title == "Inception"
+    assert et.runtime_seconds == 8523
+    assert et.external_id == "tt1375666"
