@@ -104,23 +104,33 @@ class TranscodePhase(_StrValueEnum):
 class JobState(_StrValueEnum):
     """Possible states for arm-neu Job.status (the ripper-side lifecycle).
 
-    Distinct from JobStatus (transcoder-side). Some values share string
-    representation (VIDEO_RIPPING and AUDIO_RIPPING both serialize as
-    'ripping'; VIDEO_WAITING and MANUAL_WAIT_STARTED both as 'waiting').
-    Python's enum machinery treats these as aliases - the second name
-    resolves to the first member. This is verbatim preservation of the
-    pre-existing arm-neu enum; consumers infer audio-vs-video context
-    from Job.disctype.
+    Distinct from JobStatus (transcoder-side).
+
+    Each member maps to a distinct wire string. Earlier versions
+    aliased VIDEO_RIPPING/AUDIO_RIPPING (both -> "ripping") and
+    MANUAL_WAIT_STARTED/VIDEO_WAITING (both -> "waiting") - consumers
+    had to infer audio-vs-video from Job.disctype, and could not
+    distinguish user-pause from concurrency-throttle. Disambiguated
+    in v1.1.0; the renames are breaking on the wire (clients on
+    older versions will see new strings they don't recognize) but
+    safe consumers should treat unknown values as a generic active
+    state rather than crash.
+
+    MANUAL_WAIT_STARTED -> MANUAL_PAUSED ("manual_paused"):
+      User-pause / manual-identify wait. Disctype-agnostic.
+    VIDEO_WAITING -> MAKEMKV_THROTTLED ("makemkv_throttled"):
+      Concurrency throttle while too many makemkvcon processes are
+      running. System-initiated, not user-initiated.
     """
     SUCCESS = "success"
     FAILURE = "fail"
-    MANUAL_WAIT_STARTED = "waiting"
+    MANUAL_PAUSED = "manual_paused"     # was MANUAL_WAIT_STARTED="waiting"
     IDENTIFYING = "identifying"
     IDLE = "ready"
-    VIDEO_RIPPING = "ripping"
-    VIDEO_WAITING = "waiting"      # alias of MANUAL_WAIT_STARTED
+    VIDEO_RIPPING = "video_ripping"     # was "ripping" (aliased with AUDIO_RIPPING)
+    MAKEMKV_THROTTLED = "makemkv_throttled"  # was VIDEO_WAITING="waiting"
     VIDEO_INFO = "info"
-    AUDIO_RIPPING = "ripping"      # alias of VIDEO_RIPPING
+    AUDIO_RIPPING = "audio_ripping"     # was "ripping" (aliased with VIDEO_RIPPING)
     COPYING = "copying"
     EJECTING = "ejecting"
     TRANSCODE_ACTIVE = "transcoding"
@@ -143,6 +153,12 @@ class TrackStatus(_StrValueEnum):
     Note: ``success`` is the rip-phase terminal; ``transcoded`` is the
     transcode-phase terminal. The two are intentionally distinct so the
     UI can color-code which lifecycle phase finished.
+
+    Note: ``failed`` is the generic phase-agnostic per-track failure
+    (e.g. a music rip subprocess failed before the transcode stage was
+    ever reached). ``transcode_failed`` is reserved for failures during
+    the transcode phase specifically. Consumers that only need a binary
+    success/failure signal can treat both as terminal failures.
     """
     pending = "pending"
     ripping = "ripping"
@@ -150,6 +166,7 @@ class TrackStatus(_StrValueEnum):
     success = "success"
     transcoded = "transcoded"
     transcode_failed = "transcode_failed"
+    failed = "failed"   # generic per-track failure (e.g. music rip subprocess failed)
 
 
 class WebhookEventType(_StrValueEnum):

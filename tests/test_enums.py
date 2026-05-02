@@ -97,8 +97,29 @@ def test_jobstate_string_serialization():
     from arm_contracts.enums import JobState
     assert str(JobState.SUCCESS) == "success"
     assert f"{JobState.TRANSCODE_WAITING}" == "waiting_transcode"
-    # alias check - documents pre-existing collision
-    assert JobState.AUDIO_RIPPING is JobState.VIDEO_RIPPING
+
+
+def test_jobstate_no_aliases():
+    """v1.1.0 disambiguated the previous VIDEO/AUDIO_RIPPING and
+    VIDEO_WAITING/MANUAL_WAIT_STARTED collisions."""
+    from arm_contracts.enums import JobState
+    assert JobState.AUDIO_RIPPING is not JobState.VIDEO_RIPPING
+    assert JobState.AUDIO_RIPPING.value == "audio_ripping"
+    assert JobState.VIDEO_RIPPING.value == "video_ripping"
+
+
+def test_jobstate_pause_throttle_distinct():
+    from arm_contracts.enums import JobState
+    assert JobState.MANUAL_PAUSED.value == "manual_paused"
+    assert JobState.MAKEMKV_THROTTLED.value == "makemkv_throttled"
+    assert JobState.MANUAL_PAUSED is not JobState.MAKEMKV_THROTTLED
+
+
+def test_jobstate_renamed_members_not_present():
+    """Catch typos: the old member names must not exist post-rename."""
+    from arm_contracts.enums import JobState
+    assert not hasattr(JobState, "MANUAL_WAIT_STARTED")
+    assert not hasattr(JobState, "VIDEO_WAITING")
 
 
 def test_sourcetype_round_trip():
@@ -110,7 +131,14 @@ def test_sourcetype_round_trip():
 def test_trackstatus_members():
     from arm_contracts.enums import TrackStatus
     expected = {"pending", "ripping", "encoding", "success",
-                "transcoded", "transcode_failed"}
+                "transcoded", "transcode_failed", "failed"}
+    assert {m.value for m in TrackStatus} == expected
+
+
+def test_trackstatus_includes_failed():
+    from arm_contracts.enums import TrackStatus
+    expected = {"pending", "ripping", "encoding", "success",
+                "transcoded", "transcode_failed", "failed"}
     assert {m.value for m in TrackStatus} == expected
 
 
