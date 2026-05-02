@@ -9,18 +9,9 @@ The `enabled` field is producer-side folded from `track.enabled or
 track.main_feature` so consumers don't need to know about the legacy
 `main_feature` ORM column. `main_feature` is intentionally NOT on the wire.
 """
-from typing import Literal
-
 from pydantic import BaseModel, ConfigDict
 
-
-SkipReason = Literal[
-    "too_short",
-    "too_long",
-    "makemkv_skipped",
-    "user_disabled",
-    "below_main_feature",
-]
+from arm_contracts.enums import SkipReason  # noqa: F401  (re-export)
 
 
 class Track(BaseModel):
