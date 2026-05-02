@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.6.0...v1.0.0) (2026-05-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **webhook:** WebhookPayload.type is now WebhookEventType | None rather than free str. Producers must send 'info' (only current member); the enum closes the contract so future event types are explicit breaking changes rather than silent typos.
+
+### Features
+
+* **enums:** add JobState, SourceType, TrackStatus, WebhookEventType, SkipReason ([a499c9a](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/a499c9ab168cd56195b1a4cf45a9ba9ef4f0bafb))
+* **webhook:** type field is now WebhookEventType enum ([6ee32b6](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/6ee32b68d3c6bdd0cce5e9e6d76827d0909a1820))
+
 ## [0.6.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.5.1...v0.6.0) (2026-05-02)
 
 
