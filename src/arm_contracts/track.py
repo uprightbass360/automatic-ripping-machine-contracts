@@ -9,6 +9,8 @@ The `enabled` field is producer-side folded from `track.enabled or
 track.main_feature` so consumers don't need to know about the legacy
 `main_feature` ORM column. `main_feature` is intentionally NOT on the wire.
 """
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -51,6 +53,18 @@ class Track(BaseModel):
 
     # Output-filename override; bypasses pattern rendering when set.
     custom_filename: str | None = None
+
+    # Filter decisions made by the rip pipeline. `process` is the unified
+    # "should rip" signal across the three filter paths; `skip_reason`
+    # documents why process is False or enabled is False.
+    process: bool = True
+    skip_reason: Literal[
+        "too_short",
+        "too_long",
+        "makemkv_skipped",
+        "user_disabled",
+        "below_main_feature",
+    ] | None = None
 
 
 class TrackCounts(BaseModel):
