@@ -15,6 +15,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from arm_contracts.enums import WebhookEventType
 from arm_contracts.job_config import TranscodeJobConfig
 
 # Field-length bounds. Match transcoder src/constants.py at v17.3.0.
@@ -70,7 +71,7 @@ class WebhookPayload(BaseModel):
     path: str | None = Field(None, max_length=_MAX_PATH_LENGTH)
     job_id: int
     status: str | None = Field(None, max_length=50)
-    type: str | None = Field(None, max_length=50)
+    type: WebhookEventType | None = None
 
     # Disc/content classification - free strings so the contract doesn't
     # break if either side adds a new disctype before the enum is updated.
