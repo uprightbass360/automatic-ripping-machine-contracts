@@ -111,7 +111,7 @@ class JobState(_StrValueEnum):
     MANUAL_WAIT_STARTED/VIDEO_WAITING (both -> "waiting") - consumers
     had to infer audio-vs-video from Job.disctype, and could not
     distinguish user-pause from concurrency-throttle. Disambiguated
-    in v1.1.0; the renames are breaking on the wire (clients on
+    in v2.0.0; the renames are breaking on the wire (clients on
     older versions will see new strings they don't recognize) but
     safe consumers should treat unknown values as a generic active
     state rather than crash.
