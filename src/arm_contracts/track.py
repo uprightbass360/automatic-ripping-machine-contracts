@@ -14,6 +14,15 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 
+SkipReason = Literal[
+    "too_short",
+    "too_long",
+    "makemkv_skipped",
+    "user_disabled",
+    "below_main_feature",
+]
+
+
 class Track(BaseModel):
     """Single ripped/rippable title within a Job.
 
@@ -54,17 +63,9 @@ class Track(BaseModel):
     # Output-filename override; bypasses pattern rendering when set.
     custom_filename: str | None = None
 
-    # Filter decisions made by the rip pipeline. `process` is the unified
-    # "should rip" signal across the three filter paths; `skip_reason`
-    # documents why process is False or enabled is False.
+    # Filter pipeline: should-rip signal and reason if skipped.
     process: bool = True
-    skip_reason: Literal[
-        "too_short",
-        "too_long",
-        "makemkv_skipped",
-        "user_disabled",
-        "below_main_feature",
-    ] | None = None
+    skip_reason: SkipReason | None = None
 
 
 class TrackCounts(BaseModel):
