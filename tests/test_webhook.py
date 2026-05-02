@@ -141,3 +141,31 @@ def test_title_length_cap_enforced():
     long_title = "x" * 600
     with pytest.raises(ValidationError):
         WebhookPayload(title=long_title, job_id=1)
+
+
+def test_webhook_type_accepts_enum_member():
+    from arm_contracts import WebhookPayload
+    from arm_contracts.enums import WebhookEventType
+    p = WebhookPayload(title="t", body="b", job_id=1, type=WebhookEventType.info)
+    assert p.type is WebhookEventType.info or p.type == "info"
+
+
+def test_webhook_type_accepts_valid_string():
+    from arm_contracts import WebhookPayload
+    from arm_contracts.enums import WebhookEventType
+    p = WebhookPayload(title="t", body="b", job_id=1, type="info")
+    assert p.type is WebhookEventType.info or p.type == "info"
+
+
+def test_webhook_type_rejects_invalid_string():
+    import pytest
+    from pydantic import ValidationError
+    from arm_contracts import WebhookPayload
+    with pytest.raises(ValidationError):
+        WebhookPayload(title="t", body="b", job_id=1, type="bogus")
+
+
+def test_webhook_type_allows_none():
+    from arm_contracts import WebhookPayload
+    p = WebhookPayload(title="t", body="b", job_id=1, type=None)
+    assert p.type is None
