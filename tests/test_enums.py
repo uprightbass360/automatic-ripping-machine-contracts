@@ -137,7 +137,7 @@ def test_track_skip_reason_field_accepts_valid_enum():
     from arm_contracts import Track
     from arm_contracts.enums import SkipReason
     t = Track(track_id=1, job_id=1, skip_reason=SkipReason.too_short)
-    assert t.skip_reason is SkipReason.too_short or t.skip_reason == "too_short"
+    assert t.skip_reason is SkipReason.too_short
 
 
 def test_track_skip_reason_field_rejects_invalid():

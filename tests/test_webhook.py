@@ -147,14 +147,14 @@ def test_webhook_type_accepts_enum_member():
     from arm_contracts import WebhookPayload
     from arm_contracts.enums import WebhookEventType
     p = WebhookPayload(title="t", body="b", job_id=1, type=WebhookEventType.info)
-    assert p.type is WebhookEventType.info or p.type == "info"
+    assert p.type is WebhookEventType.info
 
 
 def test_webhook_type_accepts_valid_string():
     from arm_contracts import WebhookPayload
     from arm_contracts.enums import WebhookEventType
     p = WebhookPayload(title="t", body="b", job_id=1, type="info")
-    assert p.type is WebhookEventType.info or p.type == "info"
+    assert p.type is WebhookEventType.info
 
 
 def test_webhook_type_rejects_invalid_string():
