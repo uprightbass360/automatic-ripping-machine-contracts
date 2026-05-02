@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v1.0.0...v2.0.0) (2026-05-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **enums:** JobState members previously aliased onto shared wire strings are now distinct. Renames:   VIDEO_RIPPING       'ripping'  -> 'video_ripping'   AUDIO_RIPPING       'ripping'  -> 'audio_ripping'   MANUAL_WAIT_STARTED 'waiting'  -> 'manual_paused' (member renamed to MANUAL_PAUSED)   VIDEO_WAITING       'waiting'  -> 'makemkv_throttled' (member renamed to MAKEMKV_THROTTLED)
+
+### Features
+
+* **enums:** disambiguate JobState aliases; add TrackStatus.failed ([f25f31e](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/f25f31e8d1b7a0a70ead226eb2598c4eee6d9b40))
+
 ## [1.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.6.0...v1.0.0) (2026-05-02)
 
 
