@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.5.1...v0.6.0) (2026-05-02)
+
+
+### Features
+
+* **enums:** add TranscodePhase enum ([230a4a8](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/230a4a8b6b9566d17a48b13a57a97188aac96bb9))
+* ExpectedTitle pydantic contract + Job.expected_titles field ([1bc0e99](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/1bc0e9922fb93874be19b632dd07687d17bbfb32))
+* Track contract adds process and skip_reason fields ([497da3c](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/497da3c5f9dfdb8e84b0cf3cc90a1bf1c46cc40e))
+
+
+### Bug Fixes
+
+* **progress:** rip_progress/music_progress are floats not ints ([67eba7b](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/67eba7b74318faf9e430c9cc67522b2ba890d6b3))
+
 ## [0.5.1](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v0.5.0...v0.5.1) (2026-04-29)
 
 
