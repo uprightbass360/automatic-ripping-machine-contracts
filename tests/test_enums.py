@@ -126,6 +126,8 @@ def test_sourcetype_round_trip():
     from arm_contracts.enums import SourceType
     assert SourceType("disc") is SourceType.disc
     assert SourceType("folder") is SourceType.folder
+    assert SourceType("iso") is SourceType.iso
+    assert SourceType.iso.value == "iso"
 
 
 def test_trackstatus_members():

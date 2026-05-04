@@ -141,6 +141,7 @@ class SourceType(_StrValueEnum):
     """Job input source classification."""
     disc = "disc"
     folder = "folder"
+    iso = "iso"
 
 
 class TrackStatus(_StrValueEnum):
