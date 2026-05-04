@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v2.0.0...v2.1.0) (2026-05-04)
+
+
+### Features
+
+* **enums:** add SourceType.iso ([de4062c](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/de4062cd7cce03a08fa6ebfdf1419da0be50736f))
+
 ## [2.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v1.0.0...v2.0.0) (2026-05-02)
 
 
