@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v2.1.0...v3.0.0) (2026-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* WebhookPayload.folder_name and WebhookPayload.path are removed; WebhookTrackMeta.folder_name is removed. Producers must send input_path and output_path on every job-bound webhook. Consumers must read the new fields. See spec docs/superpowers/specs/2026-05-07-webhook-input-output-paths-design.md in the arm-neu sibling AI repo.
+
+### Features
+
+* add input_path/output_path to WebhookPayload, drop folder_name/path ([37d3fd4](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/37d3fd4e166b61ebf31ed08a3bde5f368f9ba413))
+
 ## [2.1.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v2.0.0...v2.1.0) (2026-05-04)
 
 
