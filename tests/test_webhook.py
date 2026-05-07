@@ -77,19 +77,19 @@ def test_body_keeps_newlines_and_tabs():
     assert p.body == "line1\nline2\tend"
 
 
-def test_path_strips_nulls_and_controls():
-    p = WebhookPayload(title="x", job_id=1, path="ok/path\x00\x07")
-    assert p.path == "ok/path"
+def test_input_path_strips_nulls_and_controls():
+    p = WebhookPayload(title="x", job_id=1, input_path="ok/path\x00\x07")
+    assert p.input_path == "ok/path"
 
 
-def test_body_message_path_explicit_none_round_trip():
+def test_body_message_explicit_none_round_trip():
     """Explicit None in the input survives as None (validator early-exit branch)."""
     p = WebhookPayload.model_validate(
-        {"title": "x", "job_id": 1, "body": None, "message": None, "path": None}
+        {"title": "x", "job_id": 1, "body": None, "message": None, "input_path": None}
     )
     assert p.body is None
     assert p.message is None
-    assert p.path is None
+    assert p.input_path is None
 
 
 def test_effective_body_prefers_body_over_message():
@@ -169,3 +169,54 @@ def test_webhook_type_allows_none():
     from arm_contracts import WebhookPayload
     p = WebhookPayload(title="t", body="b", job_id=1, type=None)
     assert p.type is None
+
+
+def test_input_output_paths_round_trip():
+    """input_path and output_path round-trip cleanly (no rewriting,
+    no validator stripping segments)."""
+    p = WebhookPayload(
+        title="rip done",
+        body="body",
+        job_id="42",
+        input_path="movies/Foo_xyz",
+        output_path="Movies/0.Rips/Foo (2024)",
+    )
+    assert p.input_path == "movies/Foo_xyz"
+    assert p.output_path == "Movies/0.Rips/Foo (2024)"
+    dumped = p.model_dump(exclude_none=True, mode="json")
+    assert dumped["input_path"] == "movies/Foo_xyz"
+    assert dumped["output_path"] == "Movies/0.Rips/Foo (2024)"
+
+
+def test_legacy_fields_are_gone():
+    """folder_name and path are removed from the model. Sending them in
+    JSON is silently ignored (extra='ignore'), but they must not appear
+    on the model itself."""
+    assert "folder_name" not in WebhookPayload.model_fields
+    assert "path" not in WebhookPayload.model_fields
+
+
+def test_track_meta_output_path_round_trip():
+    t = WebhookTrackMeta(track_number="0", output_path="Movies/0.Rips/Foo")
+    assert t.output_path == "Movies/0.Rips/Foo"
+    assert "folder_name" not in WebhookTrackMeta.model_fields
+
+
+def test_input_path_rejects_absolute():
+    with pytest.raises(ValidationError):
+        WebhookPayload(title="x", job_id=1, input_path="/abs/path")
+
+
+def test_output_path_rejects_absolute():
+    with pytest.raises(ValidationError):
+        WebhookPayload(title="x", job_id=1, output_path="/abs/path")
+
+
+def test_output_path_rejects_dotdot_segment():
+    with pytest.raises(ValidationError):
+        WebhookPayload(title="x", job_id=1, output_path="Movies/../etc")
+
+
+def test_input_path_rejects_backslash_absolute():
+    with pytest.raises(ValidationError):
+        WebhookPayload(title="x", job_id=1, input_path="\\abs\\path")
