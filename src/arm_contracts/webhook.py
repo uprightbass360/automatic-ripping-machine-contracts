@@ -36,10 +36,12 @@ def _strip_controls(value: str, *, keep_newlines_tabs: bool = False) -> str:
 class WebhookTrackMeta(BaseModel):
     """Per-track metadata included in WebhookPayload.tracks.
 
-    arm-neu pre-renders folder/title names from arm.yaml patterns so the
-    transcoder doesn't need its own naming engine. All string fields are
-    stringified at the producer (e.g. ``str(track.year or '')``) so empty
-    values arrive as ``""`` rather than null.
+    Per-track ``output_path`` is the relative directory the transcoder
+    writes this track into, joined to ``settings.completed_path``. ARM
+    resolves it via the track's video_type subdir and rendered folder
+    name, so the transcoder needs no type-detection logic. All string
+    fields are stringified at the producer (e.g. ``str(track.year or
+    '')``) so empty values arrive as ``""`` rather than null.
     """
     model_config = ConfigDict(extra="ignore")
 
@@ -49,7 +51,7 @@ class WebhookTrackMeta(BaseModel):
     video_type: str = ""
     filename: str = ""
     has_custom_title: bool = False
-    folder_name: str = ""
+    output_path: str = ""
     title_name: str = ""
     episode_number: str = ""
     episode_name: str = ""
@@ -68,7 +70,6 @@ class WebhookPayload(BaseModel):
     title: str = Field(..., max_length=_MAX_TITLE_LENGTH)
     body: str | None = Field(None, max_length=_MAX_BODY_LENGTH)
     message: str | None = Field(None, max_length=_MAX_BODY_LENGTH)
-    path: str | None = Field(None, max_length=_MAX_PATH_LENGTH)
     job_id: int
     status: str | None = Field(None, max_length=50)
     type: WebhookEventType | None = None
@@ -80,8 +81,16 @@ class WebhookPayload(BaseModel):
     disctype: str | None = Field(None, max_length=50)
     poster_url: str | None = Field(None, max_length=_MAX_PATH_LENGTH)
 
-    # Pre-rendered names from arm-neu's naming engine.
-    folder_name: str | None = Field(None, max_length=_MAX_NAME_LENGTH)
+    # Path policy lives entirely on ARM. ARM resolves both paths
+    # relative to its share roots; the transcoder joins them to
+    # ``settings.raw_path`` and ``settings.completed_path`` respectively.
+    # See spec 2026-05-07-webhook-input-output-paths-design.md.
+    input_path: str | None = Field(None, max_length=_MAX_PATH_LENGTH)
+    output_path: str | None = Field(None, max_length=_MAX_PATH_LENGTH)
+
+    # Pre-rendered filename stem from arm-neu's naming engine. This is
+    # the file the transcoder names the .mkv after; it is independent of
+    # output_path (which is the directory).
     title_name: str | None = Field(None, max_length=_MAX_NAME_LENGTH)
 
     # Per-job overrides; reuses the existing TranscodeJobConfig envelope
@@ -111,12 +120,28 @@ class WebhookPayload(BaseModel):
             return None
         return _strip_controls(value, keep_newlines_tabs=True).strip()
 
-    @field_validator("path")
+    @field_validator("input_path", "output_path")
     @classmethod
-    def _validate_path(cls, value: str | None) -> str | None:
+    def _validate_relative_path(cls, value: str | None) -> str | None:
+        """Reject absolute paths and ``..`` traversal segments. ARM is
+        responsible for sanitizing each segment (via render_folder); this
+        is belt-and-braces in case a malformed config slips through.
+        Also strips ASCII control characters to match the historical
+        ``path`` validator's behavior.
+        """
         if value is None:
             return None
-        return _strip_controls(value).strip()
+        cleaned = _strip_controls(value).strip()
+        if not cleaned:
+            return None
+        # Absolute paths (unix /foo or windows \foo) are not legal.
+        if cleaned.startswith("/") or cleaned.startswith("\\"):
+            raise ValueError("input_path/output_path must be relative")
+        # ``..`` in any segment escapes the share root.
+        segments = cleaned.replace("\\", "/").split("/")
+        if any(seg == ".." for seg in segments):
+            raise ValueError("input_path/output_path must not contain '..'")
+        return cleaned
 
     @field_validator("job_id", mode="before")
     @classmethod
