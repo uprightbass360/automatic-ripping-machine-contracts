@@ -31,6 +31,11 @@ from arm_contracts.overrides import (
     TranscodeOverrides,
 )
 from arm_contracts.progress import JobProgressState
+from arm_contracts.rsync import (
+    RsyncProgressEvent,
+    RsyncProgressTracker,
+    parse_progress_line,
+)
 from arm_contracts.track import (
     SkipReason,
     Track,
@@ -50,6 +55,9 @@ __all__ = [
     "JobStatus",
     "JobSummary",
     "PRESET_SLUG_PATTERN",
+    "parse_progress_line",
+    "RsyncProgressEvent",
+    "RsyncProgressTracker",
     "SchemeSlug",
     "SharedOverrides",
     "SkipReason",
