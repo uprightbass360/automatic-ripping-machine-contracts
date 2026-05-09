@@ -1,4 +1,4 @@
-"""arm_contracts: shared Pydantic models for the ARM fork cross-service contract."""
+"""arm_contracts: shared Pydantic models and parsing helpers for the ARM fork cross-service contract."""
 from arm_contracts.callback import (
     TrackResult,
     TranscodeCallbackPayload,
