@@ -82,15 +82,35 @@ def parse_progress_line(raw: str) -> RsyncProgressEvent | None:
     )
 
 
-# A bare filename line: anything that is not blank, not progress2, and not
-# something that obviously is not a filename. Used by the tracker to update
-# the "most recent filename" state. Conservative: accepts lines with letters,
-# digits, dots, slashes, underscores, hyphens, spaces, parens. Rejects lines
-# starting with whitespace + digit (those are progress2 attempts that did not
-# match the full regex - we do not want to treat them as filenames).
-_FILENAME_RE = re.compile(
-    r"^(?![\s]*\d)[\w./\- ()\[\]]+$"
+# A bare filename line is recognised by either:
+#   - containing a path separator (most common: 'subdir/file.mkv'), OR
+#   - ending in a media file extension we actually move via rsync
+# This rejects rsync's verbose-mode informational lines like
+# "skipping non-regular file ..." or "sent X bytes ..." which would
+# otherwise contaminate the tracker's filename state.
+_FILENAME_EXT = (
+    ".mkv", ".iso", ".m2ts", ".vob", ".mp4", ".srt", ".sub", ".idx",
+    ".ifo", ".bup", ".bin", ".log", ".nfo", ".jpg", ".png",
+    ".flac", ".mp3", ".wav", ".m4a", ".aac",
 )
+_FILENAME_RE = re.compile(r"^(?![\s]*\d)[^\r\n]+$")
+
+
+def _looks_like_filename(line: str) -> bool:
+    """Return True if line plausibly is a bare filename emitted by
+    rsync's --info=name1, false for verbose noise."""
+    if not _FILENAME_RE.match(line):
+        return False
+    if "/" in line:
+        return True
+    # Without a path separator, reject anything containing whitespace -
+    # rsync's verbose noise ("skipping non-regular file foo.bin",
+    # "sent N bytes ...") all has whitespace, while bare filenames at
+    # the rsync target root (e.g. "Annihilation_t00.mkv") do not.
+    if any(ch.isspace() for ch in line):
+        return False
+    lower = line.lower()
+    return any(lower.endswith(ext) for ext in _FILENAME_EXT)
 
 
 class RsyncProgressTracker:
@@ -124,6 +144,6 @@ class RsyncProgressTracker:
             )
         # Not a progress line. Maybe a filename?
         line = raw.rstrip("\r\n").rstrip()
-        if line and _FILENAME_RE.match(line):
+        if line and _looks_like_filename(line):
             self._current_file = line
         return None

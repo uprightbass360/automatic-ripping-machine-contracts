@@ -137,3 +137,44 @@ def test_tracker_handles_edge_fixture_without_raising():
     # "at least the well-formed progress lines parsed successfully".
     assert any(e.progress_pct == pytest.approx(47.0) for e in events)
     assert any(e.progress_pct == pytest.approx(0.0) for e in events)
+
+
+def test_tracker_ignores_rsync_verbose_noise():
+    """rsync verbose-mode informational lines must not be latched as
+    current_file. Repro: a line like 'skipping non-regular file foo.bin'
+    fits the old permissive regex (letters, dots, spaces, hyphens) and
+    would corrupt the tracker's filename state."""
+    tracker = RsyncProgressTracker()
+    tracker.consume("skipping non-regular file foo.bin")
+    tracker.consume("sending incremental file list")
+    tracker.consume("sent 7,344,332 bytes received 35 bytes")
+    evt = tracker.consume(
+        "       12,345  47%   10.00MB/s    0:00:42 (xfr#3, to-chk=2/5)"
+    )
+    assert evt is not None
+    # The tracker must NOT have latched the noise lines; current_file
+    # should be None because no real filename was seen.
+    assert evt.current_file is None
+
+
+def test_tracker_accepts_filenames_with_separators():
+    """Filenames containing a path separator are accepted regardless of
+    extension."""
+    tracker = RsyncProgressTracker()
+    tracker.consume("subdir/anything.bin")
+    evt = tracker.consume(
+        "       12,345  47%   10.00MB/s    0:00:42 (xfr#3, to-chk=2/5)"
+    )
+    assert evt is not None
+    assert evt.current_file == "subdir/anything.bin"
+
+
+def test_tracker_accepts_filenames_with_known_extensions():
+    """Filenames at the root with a media extension are accepted."""
+    tracker = RsyncProgressTracker()
+    tracker.consume("Annihilation_t00.mkv")
+    evt = tracker.consume(
+        "       12,345  47%   10.00MB/s    0:00:42 (xfr#3, to-chk=2/5)"
+    )
+    assert evt is not None
+    assert evt.current_file == "Annihilation_t00.mkv"
