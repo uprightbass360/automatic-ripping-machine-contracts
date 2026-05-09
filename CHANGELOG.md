@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.0.0...v3.1.0) (2026-05-09)
+
+
+### Features
+
+* **progress:** add copy_progress and copy_stage fields ([781d527](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/781d527cfc7743a5580d748f60dbac99a340ad92))
+* **rsync:** add shared progress parser and tracker ([48422cc](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/48422cc547752c1fdd02fc3ebc7ff1835facea5c))
+
+
+### Bug Fixes
+
+* **rsync:** spread conformance payload across multiple files ([307bef8](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/307bef89f1398c3525a74292d89b6e83acb06cfa))
+* **rsync:** tighten filename heuristic + clean up review nits ([d6fda43](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/d6fda435b4931f522b7372a90739dfbcf01c5d83))
+
 ## [3.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v2.1.0...v3.0.0) (2026-05-07)
 
 
