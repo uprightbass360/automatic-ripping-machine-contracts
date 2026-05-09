@@ -44,16 +44,26 @@ class HelperAdapter(Protocol):
         ...
 
 
-def _make_transfer_payload(tmp_path: Path, size_mb: int = 5) -> tuple[str, str]:
-    """Create a >1MB source so rsync emits mid-transfer progress samples."""
+def _make_transfer_payload(
+    tmp_path: Path, size_mb: int = 5, file_count: int = 5,
+) -> tuple[str, str]:
+    """Create source with >1MB total spread across multiple files so rsync
+    emits cumulative-percentage stepping.
+
+    A single large file on local NVMe transfers in a single rsync sample
+    (only 0% and 100% events), and the streaming-progress assertion needs
+    at least one mid-transfer event. Spreading the payload across multiple
+    files yields per-file completion samples that satisfy the assertion
+    on fast filesystems.
+    """
     src = tmp_path / "src"
     dst = tmp_path / "dst"
     src.mkdir()
     dst.mkdir()
-    payload = src / "payload.bin"
-    # urandom is incompressible so rsync cannot collapse it
-    with open(payload, "wb") as f:
-        f.write(os.urandom(size_mb * 1024 * 1024))
+    per_file_bytes = (size_mb * 1024 * 1024) // file_count
+    for i in range(file_count):
+        # urandom is incompressible so rsync cannot collapse it
+        (src / f"payload_{i}.bin").write_bytes(os.urandom(per_file_bytes))
     return str(src), str(dst)
 
 
