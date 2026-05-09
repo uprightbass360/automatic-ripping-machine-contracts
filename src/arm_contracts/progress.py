@@ -39,3 +39,10 @@ class JobProgressState(BaseModel):
     # rounded to 1 decimal place by the parser, so it must be float.
     music_progress: float | None = None
     music_stage: str | None = None
+
+    # rsync copy progress for the scratch -> shared-raw NFS hop. Populated
+    # by arm-neu's progress_reader when the helper at
+    # arm/ripper/rsync_helper.py:run_rsync_sync writes the side-file at
+    # {LOGPATH}/progress/{job_id}.copy.log. None when no copy is in flight.
+    copy_progress: float | None = None
+    copy_stage: str | None = None
