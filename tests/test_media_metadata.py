@@ -100,3 +100,12 @@ def test_extra_fields_ignored():
     m = MediaMetadata.model_validate(payload)
     assert m.title == "Annihilation"
     assert not hasattr(m, "some_provider_specific_key")
+
+
+def test_re_exported_from_package_root():
+    """Consumers should be able to `from arm_contracts import MediaMetadata`."""
+    from arm_contracts import MediaMetadata as M  # noqa: F401
+    from arm_contracts import PATTERN_TOKENS as T  # noqa: F401
+    assert isinstance(T, dict)
+    assert "title" in T
+    assert "director" in T
