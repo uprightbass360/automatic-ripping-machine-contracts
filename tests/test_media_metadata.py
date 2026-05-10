@@ -109,3 +109,68 @@ def test_re_exported_from_package_root():
     assert isinstance(T, dict)
     assert "title" in T
     assert "director" in T
+
+
+def test_pattern_tokens_field_names_exist_on_model():
+    """Every PATTERN_TOKENS entry must reference a real MediaMetadata field
+    (or one of the aliases that point at the same field)."""
+    from arm_contracts import PATTERN_TOKENS, MediaMetadata
+    valid_fields = set(MediaMetadata.model_fields.keys())
+    for alias, (field_name, _desc, _accessor) in PATTERN_TOKENS.items():
+        assert field_name in valid_fields, (
+            f"PATTERN_TOKENS['{alias}'] references unknown field '{field_name}'"
+        )
+
+
+def test_pattern_tokens_descriptions_are_non_empty():
+    """Every token needs a description (shown in UI autocomplete)."""
+    from arm_contracts import PATTERN_TOKENS
+    for alias, (_field, desc, _accessor) in PATTERN_TOKENS.items():
+        assert desc and isinstance(desc, str), f"token '{alias}' has empty description"
+
+
+def test_pattern_tokens_accessors_handle_typed_values():
+    """Each accessor renders a string from a sample value of its field's type.
+
+    Smoke-tests the rendering path so a wrong lambda surfaces as a test
+    failure rather than as a runtime error in the naming engine.
+    """
+    from datetime import date
+    from arm_contracts import PATTERN_TOKENS, MediaMetadata
+    from arm_contracts.enums import VideoType
+
+    sample_meta = MediaMetadata(
+        title="Sample",
+        year="2024",
+        video_type=VideoType.movie,
+        imdb_id="tt1234567",
+        runtime_seconds=7200,  # 120 min
+        genres=["Drama"],
+        directors=["Director Name"],
+        writers=["Writer Name"],
+        mpaa_rating="PG-13",
+        released_date=date(2024, 1, 15),
+        language="en",
+        network="HBO",
+        season="03",
+        artist="Artist Name",
+        album="Album Name",
+        album_artist="Album Artist",
+    )
+
+    for alias, (field_name, _desc, accessor) in PATTERN_TOKENS.items():
+        value = getattr(sample_meta, field_name)
+        if value is None or value == [] or value == "":
+            continue  # accessors only run on populated values
+        rendered = accessor(value)
+        assert isinstance(rendered, str), (
+            f"accessor for '{alias}' returned {type(rendered).__name__}, expected str"
+        )
+
+    # Spot-check the non-trivial accessors
+    assert PATTERN_TOKENS["runtime_minutes"][2](sample_meta.runtime_seconds) == "120"
+    assert PATTERN_TOKENS["genre"][2](sample_meta.genres) == "Drama"
+    assert PATTERN_TOKENS["genre"][2]([]) == ""  # empty list -> empty string
+    assert PATTERN_TOKENS["released"][2](sample_meta.released_date) == "2024-01-15"
+    assert PATTERN_TOKENS["season"][2]("3") == "03"
+    assert PATTERN_TOKENS["video_type"][2](VideoType.movie) == "movie"
