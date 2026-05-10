@@ -66,6 +66,7 @@ class VideoType(_StrValueEnum):
     """High-level content classification used for folder layout."""
     movie = "movie"
     series = "series"
+    music = "music"
     unknown = "unknown"
 
 

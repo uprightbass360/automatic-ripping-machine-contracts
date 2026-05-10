@@ -47,8 +47,9 @@ def test_disctype_members():
 
 def test_video_type_members():
     from arm_contracts import VideoType
-    assert set(VideoType) == {VideoType.movie, VideoType.series, VideoType.unknown}
+    assert set(VideoType) == {VideoType.movie, VideoType.series, VideoType.music, VideoType.unknown}
     assert VideoType.movie == "movie"
+    assert VideoType.music == "music"
 
 
 def test_tier_name_members():
