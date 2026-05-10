@@ -24,6 +24,10 @@ from arm_contracts.job_config import (
     PRESET_SLUG_PATTERN,
     TranscodeJobConfig,
 )
+from arm_contracts.media_metadata import (
+    MediaMetadata,
+    PATTERN_TOKENS,
+)
 from arm_contracts.overrides import (
     SharedOverrides,
     TierOverrides,
@@ -54,6 +58,8 @@ __all__ = [
     "JobState",
     "JobStatus",
     "JobSummary",
+    "MediaMetadata",
+    "PATTERN_TOKENS",
     "PRESET_SLUG_PATTERN",
     "parse_progress_line",
     "RsyncProgressEvent",
