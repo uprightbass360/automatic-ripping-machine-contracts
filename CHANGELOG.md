@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.1.0...v3.2.0) (2026-05-11)
+
+
+### Features
+
+* add MediaMetadata contract + PATTERN_TOKENS map ([cbb91a7](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/cbb91a7f2122d893cb9f21cbe0038297672a4ed0))
+* re-export MediaMetadata + PATTERN_TOKENS from package root ([b9be9d9](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/b9be9d94cd103aab0f7a892b817df653fd974746))
+
 ## [3.1.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.0.0...v3.1.0) (2026-05-09)
 
 
