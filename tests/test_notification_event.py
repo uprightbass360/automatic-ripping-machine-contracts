@@ -166,3 +166,45 @@ def test_union_rejects_unknown_event_key():
             "job_id": 1,
             "job_disc_type": "dvd",
         })
+
+
+def test_job_manual_wait_required_event():
+    from arm_contracts.notification_event import JobManualWaitRequiredEvent
+    e = JobManualWaitRequiredEvent(
+        **_base_kwargs(),
+        wait_minutes_remaining=25,
+        reason="manual_mode_activated",
+    )
+    assert e.event_key == "job.manual_wait_required"
+    assert e.wait_minutes_remaining == 25
+    assert e.reason == "manual_mode_activated"
+
+
+def test_job_manual_wait_rejects_unknown_reason():
+    from arm_contracts.notification_event import JobManualWaitRequiredEvent
+    with pytest.raises(ValidationError):
+        JobManualWaitRequiredEvent(
+            **_base_kwargs(),
+            wait_minutes_remaining=5,
+            reason="not_a_real_reason",
+        )
+
+
+def test_job_duplicate_detected_event():
+    from arm_contracts.notification_event import JobDuplicateDetectedEvent
+    e = JobDuplicateDetectedEvent(
+        **_base_kwargs(),
+        existing_job_id=42,
+        existing_output_path="/completed/movies/some-movie.mkv",
+    )
+    assert e.event_key == "job.duplicate_detected"
+    assert e.existing_job_id == 42
+
+
+def test_job_duplicate_detected_existing_output_path_optional():
+    from arm_contracts.notification_event import JobDuplicateDetectedEvent
+    e = JobDuplicateDetectedEvent(
+        **_base_kwargs(),
+        existing_job_id=42,
+    )
+    assert e.existing_output_path is None

@@ -74,11 +74,37 @@ class JobFailedEvent(JobEventBase):
     error_code: str | None = None
 
 
+class JobManualWaitRequiredEvent(JobEventBase):
+    """ARM is paused waiting for the user to set up the rip manually
+    (e.g. select tracks, confirm metadata). Fires when manual mode
+    activates, and again on each reminder timer tick while waiting.
+
+    ``wait_minutes_remaining`` ticks down on each fire so subscribers
+    can render countdown messages (\"5 minutes left\"). ``reason`` is
+    a short machine-readable code: \"manual_mode_activated\",
+    \"reminder\", or \"final_warning\".
+    """
+    event_key: Literal["job.manual_wait_required"] = "job.manual_wait_required"
+    wait_minutes_remaining: int
+    reason: Literal["manual_mode_activated", "reminder", "final_warning"]
+
+
+class JobDuplicateDetectedEvent(JobEventBase):
+    """ARM detected a duplicate disc and is about to abort the job
+    (ALLOW_DUPLICATES is false). The user can either let the abort
+    happen or rename the existing rip to disambiguate."""
+    event_key: Literal["job.duplicate_detected"] = "job.duplicate_detected"
+    existing_job_id: int
+    existing_output_path: str | None = None
+
+
 NotificationEvent = Annotated[
     JobStartedEvent
     | JobRipCompleteEvent
     | JobTranscodeCompleteEvent
-    | JobFailedEvent,
+    | JobFailedEvent
+    | JobManualWaitRequiredEvent
+    | JobDuplicateDetectedEvent,
     Field(discriminator="event_key"),
 ]
 """Discriminated union over the four event types. Consumers should

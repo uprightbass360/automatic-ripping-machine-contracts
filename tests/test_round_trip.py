@@ -121,3 +121,27 @@ def test_outbound_webhook_payload_round_trip():
     assert p.event.event_key == "job.failed"
     again = OutboundWebhookPayload.model_validate(json.loads(p.model_dump_json()))
     assert again == p
+
+
+def test_job_manual_wait_required_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobManualWaitRequiredEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_manual_wait_required_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobManualWaitRequiredEvent)
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
+
+
+def test_job_duplicate_detected_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobDuplicateDetectedEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_duplicate_detected_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobDuplicateDetectedEvent)
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
