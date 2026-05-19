@@ -86,15 +86,15 @@ def test_channel_config_union_rejects_unknown_type():
 
 
 def test_event_keys_literal_matches_event_union():
-    """The EVENT_KEYS literal must enumerate exactly the event_key
+    """The EventKey literal must enumerate exactly the event_key
     discriminator values used by NotificationEvent. Adding a 5th event
-    to the union without updating EVENT_KEYS would break channel
+    to the union without updating EventKey would break channel
     subscriptions silently — this test fails if that drift ever happens.
 
     Derives the expected set from NotificationEvent itself (not a
     hardcoded class list) so the guard is self-maintaining."""
     from typing import get_args
-    from arm_contracts.notification_channel import EVENT_KEYS
+    from arm_contracts.notification_channel import EventKey
     from arm_contracts.notification_event import NotificationEvent
 
     # NotificationEvent is Annotated[Union[...], Field(discriminator=...)].
@@ -108,7 +108,7 @@ def test_event_keys_literal_matches_event_union():
     union_keys = {
         cls.model_fields["event_key"].default for cls in event_classes
     }
-    event_keys_set = set(get_args(EVENT_KEYS))
+    event_keys_set = set(get_args(EventKey))
     assert event_keys_set == union_keys
 
 
@@ -137,7 +137,7 @@ def test_public_re_exports():
         BashChannelConfig,
         ChannelConfig,
         ChannelTemplate,
-        EVENT_KEYS,
+        EventKey,
     )
     # If any name is missing the import raises ImportError, failing the test.
     assert NotificationEvent is not None
