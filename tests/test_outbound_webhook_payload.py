@@ -1,10 +1,14 @@
 """Tests for OutboundWebhookPayload — the v18 rich-payload wire shape
 sent by arm-neu's notification dispatcher to webhook channels."""
+import json
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
 from pydantic import ValidationError
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def _event_payload_dict():
@@ -86,3 +90,22 @@ def test_outbound_webhook_payload_public_re_exports():
     from arm_contracts import OutboundWebhookPayload, ChannelRef
     assert OutboundWebhookPayload is not None
     assert ChannelRef is not None
+
+
+def test_outbound_webhook_payload_top_level_keys_are_stable():
+    """The set of top-level keys in OutboundWebhookPayload is a public
+    wire contract. Any addition or removal is a schema_version bump.
+    This test guards against accidental field churn."""
+    from arm_contracts import OutboundWebhookPayload
+    raw = json.loads((FIXTURES / "outbound_webhook_payload.json").read_text())
+    p = OutboundWebhookPayload.model_validate(raw)
+    dumped = json.loads(p.model_dump_json())
+    assert set(dumped.keys()) == {
+        "schema_version",
+        "event",
+        "title",
+        "body",
+        "channel",
+        "arm_instance_name",
+        "sent_at",
+    }

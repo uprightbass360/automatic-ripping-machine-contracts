@@ -111,3 +111,13 @@ def test_bash_channel_round_trip():
     assert c.enabled is False
     again = Channel.model_validate(json.loads(c.model_dump_json()))
     assert again == c
+
+
+def test_outbound_webhook_payload_round_trip():
+    from arm_contracts import OutboundWebhookPayload
+    raw = json.loads((FIXTURES / "outbound_webhook_payload.json").read_text())
+    p = OutboundWebhookPayload.model_validate(raw)
+    assert p.schema_version == 1
+    assert p.event.event_key == "job.failed"
+    again = OutboundWebhookPayload.model_validate(json.loads(p.model_dump_json()))
+    assert again == p
