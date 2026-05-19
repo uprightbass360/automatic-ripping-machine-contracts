@@ -56,7 +56,7 @@ ChannelConfig = Annotated[
 ``notification_channel.config`` column."""
 
 
-EVENT_KEYS = Literal[
+EventKey = Literal[
     "job.started",
     "job.rip_complete",
     "job.transcode_complete",
@@ -97,8 +97,8 @@ class Channel(BaseModel):
     name: str
     enabled: bool
     config: ChannelConfig
-    subscribed_events: list[EVENT_KEYS]
-    templates: dict[EVENT_KEYS, ChannelTemplate] = Field(default_factory=dict)
+    subscribed_events: list[EventKey]
+    templates: dict[EventKey, ChannelTemplate] = Field(default_factory=dict)
     last_fired_at: datetime | None = None
     last_success_at: datetime | None = None
     last_error: str | None = None
@@ -113,8 +113,8 @@ class ChannelCreate(BaseModel):
     name: str
     enabled: bool = True
     config: ChannelConfig
-    subscribed_events: list[EVENT_KEYS] = Field(default_factory=list)
-    templates: dict[EVENT_KEYS, ChannelTemplate] = Field(default_factory=dict)
+    subscribed_events: list[EventKey] = Field(default_factory=list)
+    templates: dict[EventKey, ChannelTemplate] = Field(default_factory=dict)
 
 
 class ChannelUpdate(BaseModel):
@@ -127,5 +127,5 @@ class ChannelUpdate(BaseModel):
     name: str | None = None
     enabled: bool | None = None
     config: ChannelConfig | None = None
-    subscribed_events: list[EVENT_KEYS] | None = None
-    templates: dict[EVENT_KEYS, ChannelTemplate] | None = None
+    subscribed_events: list[EventKey] | None = None
+    templates: dict[EventKey, ChannelTemplate] | None = None

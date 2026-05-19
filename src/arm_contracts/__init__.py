@@ -36,7 +36,7 @@ from arm_contracts.notification_channel import (
     ChannelCreate,
     ChannelTemplate,
     ChannelUpdate,
-    EVENT_KEYS,
+    EventKey,
     WebhookChannelConfig,
 )
 from arm_contracts.notification_event import (
@@ -85,7 +85,7 @@ __all__ = [
     "ChannelTemplate",
     "ChannelUpdate",
     "Disctype",
-    "EVENT_KEYS",
+    "EventKey",
     "ExpectedTitle",
     "Job",
     "JobDuplicateDetectedEvent",
