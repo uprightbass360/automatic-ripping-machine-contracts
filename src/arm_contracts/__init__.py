@@ -47,6 +47,10 @@ from arm_contracts.notification_event import (
     JobTranscodeCompleteEvent,
     NotificationEvent,
 )
+from arm_contracts.outbound_webhook_payload import (
+    ChannelRef,
+    OutboundWebhookPayload,
+)
 from arm_contracts.overrides import (
     SharedOverrides,
     TierOverrides,
@@ -75,6 +79,7 @@ __all__ = [
     "Channel",
     "ChannelConfig",
     "ChannelCreate",
+    "ChannelRef",
     "ChannelTemplate",
     "ChannelUpdate",
     "Disctype",
@@ -92,6 +97,7 @@ __all__ = [
     "JobTranscodeCompleteEvent",
     "MediaMetadata",
     "NotificationEvent",
+    "OutboundWebhookPayload",
     "PATTERN_TOKENS",
     "PRESET_SLUG_PATTERN",
     "RsyncProgressEvent",
