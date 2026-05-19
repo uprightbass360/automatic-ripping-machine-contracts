@@ -72,3 +72,15 @@ class JobFailedEvent(JobEventBase):
     phase: Literal["rip", "transcode"]
     error_message: str
     error_code: str | None = None
+
+
+NotificationEvent = Annotated[
+    JobStartedEvent
+    | JobRipCompleteEvent
+    | JobTranscodeCompleteEvent
+    | JobFailedEvent,
+    Field(discriminator="event_key"),
+]
+"""Discriminated union over the four event types. Consumers should
+type their dispatch / outbox fields as ``NotificationEvent`` to get
+typed access to the variant via the ``event_key`` literal."""

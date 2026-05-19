@@ -113,3 +113,56 @@ def test_event_key_is_immutable_default():
     assert e.event_key == "job.started"
     with pytest.raises(ValidationError):
         JobStartedEvent(**_base_kwargs(), event_key="job.failed")
+
+
+def test_union_discriminates_on_event_key():
+    """A consumer that types a field as NotificationEvent should get
+    back the correct concrete subclass based on the wire ``event_key``."""
+    from pydantic import TypeAdapter
+    from arm_contracts.notification_event import (
+        NotificationEvent,
+        JobStartedEvent,
+        JobFailedEvent,
+    )
+    adapter = TypeAdapter(NotificationEvent)
+
+    started_wire = {
+        "event_key": "job.started",
+        "event_id": str(uuid4()),
+        "occurred_at": datetime.now(timezone.utc).isoformat(),
+        "job_id": 1,
+        "job_title": "T",
+        "job_disc_type": "dvd",
+        "job_imdb_id": None,
+        "drive_mount": "/dev/sr0",
+    }
+    parsed = adapter.validate_python(started_wire)
+    assert isinstance(parsed, JobStartedEvent)
+    assert parsed.drive_mount == "/dev/sr0"
+
+    failed_wire = {
+        "event_key": "job.failed",
+        "event_id": str(uuid4()),
+        "occurred_at": datetime.now(timezone.utc).isoformat(),
+        "job_id": 1,
+        "job_disc_type": "dvd",
+        "phase": "rip",
+        "error_message": "boom",
+    }
+    parsed = adapter.validate_python(failed_wire)
+    assert isinstance(parsed, JobFailedEvent)
+    assert parsed.phase == "rip"
+
+
+def test_union_rejects_unknown_event_key():
+    from pydantic import TypeAdapter
+    from arm_contracts.notification_event import NotificationEvent
+    adapter = TypeAdapter(NotificationEvent)
+    with pytest.raises(ValidationError):
+        adapter.validate_python({
+            "event_key": "job.someday-new-event",
+            "event_id": str(uuid4()),
+            "occurred_at": datetime.now(timezone.utc).isoformat(),
+            "job_id": 1,
+            "job_disc_type": "dvd",
+        })
