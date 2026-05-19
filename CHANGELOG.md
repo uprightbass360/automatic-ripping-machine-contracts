@@ -1,5 +1,32 @@
 # Changelog
 
+## [4.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.2.0...v4.0.0) (2026-05-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **notifications:** Adds new required Pydantic models. Consumers (arm-neu, arm-ui) must pin the contracts submodule to v4.x and use the new NotificationEvent / Channel / OutboundWebhookPayload types. The actual notification dispatch code in neu and the UI page that uses it land in sub-spec 2 and sub-spec 3.
+
+### Features
+
+* **notifications:** add Channel / ChannelCreate / ChannelUpdate ([3da9215](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/3da9215a61cf188c132d4f78d3b8273078ccedb8))
+* **notifications:** add channel JSON fixtures + round-trip tests ([f6e3ed5](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/f6e3ed5b4254acf24823153ccedf2b39682285c4))
+* **notifications:** add ChannelConfig discriminated union ([b3322fc](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/b3322fc4d1184ed5e54909aa49ea3457b2542f5f))
+* **notifications:** add event JSON fixtures + round-trip tests ([ea1b5c0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/ea1b5c0c4a881b8c1930a49d67271ee1433cc9ee))
+* **notifications:** add EVENT_KEYS, ChannelTemplate, public re-exports ([ffcaa6d](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/ffcaa6d52da58b7ef34b0f133e1f053ec0f323e1))
+* **notifications:** add four concrete event types ([d9d7e3b](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/d9d7e3b6ff7c55fe18af1e2081496a89692db6b1))
+* **notifications:** add JobEventBase for event payloads ([ff8805f](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/ff8805f70a8284ee22d30213999f3c4d7c10bdc5))
+* **notifications:** add manual_wait_required and duplicate_detected events ([4e1146b](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/4e1146b7f6e24af991be22ccdee3c6ec92262578))
+* **notifications:** add NotificationEvent discriminated union ([3547c9c](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/3547c9c16bf87ddea50ffeae8fc2cfc852cbcb5e))
+* **notifications:** add outbound webhook payload fixture + snapshot ([fbc1d21](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/fbc1d21cc5e756ad7daad4e65df6020a2c784323))
+* **notifications:** add OutboundWebhookPayload + ChannelRef ([bb8c39b](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/bb8c39bdbd8d15e3bf7888a5f225b38e06fab8e2))
+* **notifications:** introduce notification events, channels, outbound payload ([f16a729](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/f16a72916cbfa03811ad7c96e62909fead90b3ca))
+
+
+### Bug Fixes
+
+* **notifications:** restore case-sensitive ordering of __all__ ([cbf6e9f](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/cbf6e9f093b388971da379cd1620fc4e24397177))
+
 ## [3.2.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.1.0...v3.2.0) (2026-05-11)
 
 
