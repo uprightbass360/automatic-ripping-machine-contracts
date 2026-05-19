@@ -86,24 +86,29 @@ def test_channel_config_union_rejects_unknown_type():
 
 
 def test_event_keys_literal_matches_event_union():
-    """The four keys in EVENT_KEYS must be exactly the four event_key
-    literals used by NotificationEvent. If anyone adds an event, both
-    sides must update together."""
+    """The EVENT_KEYS literal must enumerate exactly the event_key
+    discriminator values used by NotificationEvent. Adding a 5th event
+    to the union without updating EVENT_KEYS would break channel
+    subscriptions silently — this test fails if that drift ever happens.
+
+    Derives the expected set from NotificationEvent itself (not a
+    hardcoded class list) so the guard is self-maintaining."""
     from typing import get_args
     from arm_contracts.notification_channel import EVENT_KEYS
-    from arm_contracts.notification_event import (
-        JobStartedEvent,
-        JobRipCompleteEvent,
-        JobTranscodeCompleteEvent,
-        JobFailedEvent,
-    )
-    event_keys_set = set(get_args(EVENT_KEYS))
+    from arm_contracts.notification_event import NotificationEvent
+
+    # NotificationEvent is Annotated[Union[...], Field(discriminator=...)].
+    # get_args(NotificationEvent) returns (Union[...], FieldInfo). The
+    # first element is the Union; get_args on that yields the concrete
+    # event classes.
+    annotated_args = get_args(NotificationEvent)
+    union_type = annotated_args[0]
+    event_classes = get_args(union_type)
+
     union_keys = {
-        JobStartedEvent.model_fields["event_key"].default,
-        JobRipCompleteEvent.model_fields["event_key"].default,
-        JobTranscodeCompleteEvent.model_fields["event_key"].default,
-        JobFailedEvent.model_fields["event_key"].default,
+        cls.model_fields["event_key"].default for cls in event_classes
     }
+    event_keys_set = set(get_args(EVENT_KEYS))
     assert event_keys_set == union_keys
 
 
