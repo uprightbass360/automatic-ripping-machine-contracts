@@ -86,7 +86,6 @@ __all__ = [
     "JobTranscodeCompleteEvent",
     "MediaMetadata",
     "NotificationEvent",
-    "parse_progress_line",
     "PATTERN_TOKENS",
     "PRESET_SLUG_PATTERN",
     "RsyncProgressEvent",
@@ -111,4 +110,5 @@ __all__ = [
     "WebhookEventType",
     "WebhookPayload",
     "WebhookTrackMeta",
+    "parse_progress_line",
 ]
