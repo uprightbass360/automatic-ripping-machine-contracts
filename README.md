@@ -34,6 +34,9 @@ Pydantic v2 models, exported from `arm_contracts`:
 - `expected_title` — TVDB episode-matching hints
 - `overrides` — named-file and per-job override schema
 - `enums` — shared enum types (job status, disc type, encoder, etc.)
+- `notification_event` — discriminated union of job lifecycle events (`job.started`, `job.rip_complete`, `job.transcode_complete`, `job.failed`)
+- `notification_channel` — channel config union (Apprise / Webhook / Bash), plus `Channel`, `ChannelCreate`, `ChannelUpdate`, `ChannelTemplate`, `EVENT_KEYS`
+- `outbound_webhook_payload` — `OutboundWebhookPayload`, the v18 rich-payload wire shape for user-configured webhook channels
 
 ## Versioning
 
