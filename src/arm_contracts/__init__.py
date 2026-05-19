@@ -28,6 +28,22 @@ from arm_contracts.media_metadata import (
     MediaMetadata,
     PATTERN_TOKENS,
 )
+from arm_contracts.notification_channel import (
+    AppriseChannelConfig,
+    BashChannelConfig,
+    ChannelConfig,
+    ChannelTemplate,
+    EVENT_KEYS,
+    WebhookChannelConfig,
+)
+from arm_contracts.notification_event import (
+    JobEventBase,
+    JobFailedEvent,
+    JobRipCompleteEvent,
+    JobStartedEvent,
+    JobTranscodeCompleteEvent,
+    NotificationEvent,
+)
 from arm_contracts.overrides import (
     SharedOverrides,
     TierOverrides,
@@ -51,17 +67,28 @@ from arm_contracts.webhook import (
 )
 
 __all__ = [
+    "AppriseChannelConfig",
+    "BashChannelConfig",
+    "ChannelConfig",
+    "ChannelTemplate",
     "Disctype",
+    "EVENT_KEYS",
     "ExpectedTitle",
     "Job",
+    "JobEventBase",
+    "JobFailedEvent",
     "JobProgressState",
+    "JobRipCompleteEvent",
+    "JobStartedEvent",
     "JobState",
     "JobStatus",
     "JobSummary",
+    "JobTranscodeCompleteEvent",
     "MediaMetadata",
+    "NotificationEvent",
+    "parse_progress_line",
     "PATTERN_TOKENS",
     "PRESET_SLUG_PATTERN",
-    "parse_progress_line",
     "RsyncProgressEvent",
     "RsyncProgressTracker",
     "SchemeSlug",
@@ -80,6 +107,7 @@ __all__ = [
     "TranscodeOverrides",
     "TranscodePhase",
     "VideoType",
+    "WebhookChannelConfig",
     "WebhookEventType",
     "WebhookPayload",
     "WebhookTrackMeta",

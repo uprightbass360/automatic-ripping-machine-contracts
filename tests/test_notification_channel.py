@@ -83,3 +83,57 @@ def test_channel_config_union_rejects_unknown_type():
     adapter = TypeAdapter(ChannelConfig)
     with pytest.raises(ValidationError):
         adapter.validate_python({"type": "smoke-signal", "url": "x"})
+
+
+def test_event_keys_literal_matches_event_union():
+    """The four keys in EVENT_KEYS must be exactly the four event_key
+    literals used by NotificationEvent. If anyone adds an event, both
+    sides must update together."""
+    from typing import get_args
+    from arm_contracts.notification_channel import EVENT_KEYS
+    from arm_contracts.notification_event import (
+        JobStartedEvent,
+        JobRipCompleteEvent,
+        JobTranscodeCompleteEvent,
+        JobFailedEvent,
+    )
+    event_keys_set = set(get_args(EVENT_KEYS))
+    union_keys = {
+        JobStartedEvent.model_fields["event_key"].default,
+        JobRipCompleteEvent.model_fields["event_key"].default,
+        JobTranscodeCompleteEvent.model_fields["event_key"].default,
+        JobFailedEvent.model_fields["event_key"].default,
+    }
+    assert event_keys_set == union_keys
+
+
+def test_channel_template_all_fields_optional():
+    from arm_contracts.notification_channel import ChannelTemplate
+    t = ChannelTemplate()
+    assert t.title is None
+    assert t.body is None
+    t2 = ChannelTemplate(title="X", body="Y")
+    assert t2.title == "X"
+    assert t2.body == "Y"
+
+
+def test_public_re_exports():
+    """All new names must be importable from the package root."""
+    from arm_contracts import (
+        # event types
+        NotificationEvent,
+        JobStartedEvent,
+        JobRipCompleteEvent,
+        JobTranscodeCompleteEvent,
+        JobFailedEvent,
+        # channel types
+        AppriseChannelConfig,
+        WebhookChannelConfig,
+        BashChannelConfig,
+        ChannelConfig,
+        ChannelTemplate,
+        EVENT_KEYS,
+    )
+    # If any name is missing the import raises ImportError, failing the test.
+    assert NotificationEvent is not None
+    assert ChannelConfig is not None

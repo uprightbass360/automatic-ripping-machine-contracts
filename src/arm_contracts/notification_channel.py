@@ -54,3 +54,24 @@ ChannelConfig = Annotated[
 ]
 """Discriminated union of channel configs. Stored as JSON in the
 ``notification_channel.config`` column."""
+
+
+EVENT_KEYS = Literal[
+    "job.started",
+    "job.rip_complete",
+    "job.transcode_complete",
+    "job.failed",
+]
+"""The set of event_key values a channel may subscribe to. Must stay
+in sync with ``notification_event.NotificationEvent``'s discriminator
+literals; the ``test_event_keys_literal_matches_event_union`` test
+in ``tests/test_notification_channel.py`` enforces this."""
+
+
+class ChannelTemplate(BaseModel):
+    """Per-event title/body override. ``None`` means 'use the default
+    template for this event' — the dispatcher resolves defaults from
+    a static map keyed off event_key in arm-neu."""
+    model_config = ConfigDict(extra="ignore")
+    title: str | None = None
+    body: str | None = None
