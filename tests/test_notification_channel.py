@@ -137,3 +137,99 @@ def test_public_re_exports():
     # If any name is missing the import raises ImportError, failing the test.
     assert NotificationEvent is not None
     assert ChannelConfig is not None
+
+
+def _valid_apprise_config_dict():
+    return {"type": "apprise", "url": "discord://id/token"}
+
+
+def test_channel_model_minimal():
+    from arm_contracts.notification_channel import Channel
+    c = Channel(
+        id=1,
+        type="apprise",
+        name="Family Discord",
+        enabled=True,
+        config=_valid_apprise_config_dict(),
+        subscribed_events=["job.started"],
+    )
+    assert c.id == 1
+    assert c.name == "Family Discord"
+    assert c.templates == {}
+    assert c.last_fired_at is None
+    assert c.last_success_at is None
+    assert c.last_error is None
+
+
+def test_channel_model_with_template():
+    from arm_contracts.notification_channel import Channel
+    c = Channel(
+        id=1,
+        type="apprise",
+        name="X",
+        enabled=True,
+        config=_valid_apprise_config_dict(),
+        subscribed_events=["job.started", "job.failed"],
+        templates={
+            "job.started": {"title": "Disc detected", "body": "{job_title}"},
+        },
+    )
+    assert c.templates["job.started"].title == "Disc detected"
+
+
+def test_channel_create_defaults():
+    from arm_contracts.notification_channel import ChannelCreate
+    c = ChannelCreate(
+        type="bash",
+        name="Log everything",
+        config={"type": "bash", "script_path": "/x"},
+    )
+    assert c.enabled is True
+    assert c.subscribed_events == []
+    assert c.templates == {}
+
+
+def test_channel_update_all_optional():
+    from arm_contracts.notification_channel import ChannelUpdate
+    u = ChannelUpdate()  # all fields optional → empty patch
+    assert u.name is None
+    assert u.config is None
+    assert u.subscribed_events is None
+
+    u2 = ChannelUpdate(name="Renamed")
+    assert u2.name == "Renamed"
+    assert u2.config is None
+
+
+def test_channel_rejects_invalid_event_key():
+    from pydantic import ValidationError
+    from arm_contracts.notification_channel import ChannelCreate
+    with pytest.raises(ValidationError):
+        ChannelCreate(
+            type="apprise",
+            name="X",
+            config=_valid_apprise_config_dict(),
+            subscribed_events=["job.someday-new"],
+        )
+
+
+def test_channel_template_keyed_by_event_key():
+    """Pydantic v2 enforces dict keys against the Literal type."""
+    from pydantic import ValidationError
+    from arm_contracts.notification_channel import ChannelCreate
+    with pytest.raises(ValidationError):
+        ChannelCreate(
+            type="apprise",
+            name="X",
+            config=_valid_apprise_config_dict(),
+            templates={"not.a.valid.event": {"title": "x"}},
+        )
+
+
+def test_channel_apprise_channel_re_exports():
+    """Channel, ChannelCreate, ChannelUpdate must be importable from
+    the package root."""
+    from arm_contracts import Channel, ChannelCreate, ChannelUpdate
+    assert Channel is not None
+    assert ChannelCreate is not None
+    assert ChannelUpdate is not None

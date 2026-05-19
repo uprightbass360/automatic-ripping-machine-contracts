@@ -75,3 +75,55 @@ class ChannelTemplate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     title: str | None = None
     body: str | None = None
+
+
+class Channel(BaseModel):
+    """API representation of a configured notification channel.
+
+    Storage-only fields (``created_at``, ``updated_at``) live on the
+    SQLAlchemy model in arm-neu and are intentionally not exposed via
+    the API — keep them off this model.
+
+    Secret values inside ``config`` (e.g. ``WebhookChannelConfig.shared_secret``)
+    are returned masked when this model is serialized by the API layer;
+    see neu's API layer for the ``<hidden>``-roundtrip rule on PATCH.
+    """
+    model_config = ConfigDict(extra="ignore")
+
+    id: int
+    type: Literal["apprise", "webhook", "bash"]
+    name: str
+    enabled: bool
+    config: ChannelConfig
+    subscribed_events: list[EVENT_KEYS]
+    templates: dict[EVENT_KEYS, ChannelTemplate] = Field(default_factory=dict)
+    last_fired_at: datetime | None = None
+    last_success_at: datetime | None = None
+    last_error: str | None = None
+
+
+class ChannelCreate(BaseModel):
+    """POST /api/v1/notifications/channels body. ``id``, ``last_*``
+    fields are excluded (server-assigned)."""
+    model_config = ConfigDict(extra="ignore")
+
+    type: Literal["apprise", "webhook", "bash"]
+    name: str
+    enabled: bool = True
+    config: ChannelConfig
+    subscribed_events: list[EVENT_KEYS] = Field(default_factory=list)
+    templates: dict[EVENT_KEYS, ChannelTemplate] = Field(default_factory=dict)
+
+
+class ChannelUpdate(BaseModel):
+    """PATCH /api/v1/notifications/channels/{id} body. All fields
+    optional — only provided keys are applied. The API layer enforces
+    the ``<hidden>``-literal roundtrip rule for ``SecretStr`` fields
+    inside ``config``."""
+    model_config = ConfigDict(extra="ignore")
+
+    name: str | None = None
+    enabled: bool | None = None
+    config: ChannelConfig | None = None
+    subscribed_events: list[EVENT_KEYS] | None = None
+    templates: dict[EVENT_KEYS, ChannelTemplate] | None = None

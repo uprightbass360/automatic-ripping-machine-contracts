@@ -31,8 +31,11 @@ from arm_contracts.media_metadata import (
 from arm_contracts.notification_channel import (
     AppriseChannelConfig,
     BashChannelConfig,
+    Channel,
     ChannelConfig,
+    ChannelCreate,
     ChannelTemplate,
+    ChannelUpdate,
     EVENT_KEYS,
     WebhookChannelConfig,
 )
@@ -69,8 +72,11 @@ from arm_contracts.webhook import (
 __all__ = [
     "AppriseChannelConfig",
     "BashChannelConfig",
+    "Channel",
     "ChannelConfig",
+    "ChannelCreate",
     "ChannelTemplate",
+    "ChannelUpdate",
     "Disctype",
     "EVENT_KEYS",
     "ExpectedTitle",
