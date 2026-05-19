@@ -35,3 +35,40 @@ class JobEventBase(BaseModel):
     job_title: str | None = None
     job_disc_type: Disctype
     job_imdb_id: str | None = None
+
+
+class JobStartedEvent(JobEventBase):
+    """Disc detected and job created. Fires once per job, at the entry
+    of the rip pipeline."""
+    event_key: Literal["job.started"] = "job.started"
+    drive_mount: str | None = None
+
+
+class JobRipCompleteEvent(JobEventBase):
+    """MakeMKV (or folder-import) finished; raw files handed off to the
+    transcoder. ``track_count`` is the number of tracks the rip
+    produced, not the number selected for transcode."""
+    event_key: Literal["job.rip_complete"] = "job.rip_complete"
+    rip_duration_seconds: int
+    track_count: int
+
+
+class JobTranscodeCompleteEvent(JobEventBase):
+    """Transcoder reported the job done. ``output_path`` is the final
+    destination relative to the shared media root, matching the same
+    convention used elsewhere in arm_contracts."""
+    event_key: Literal["job.transcode_complete"] = "job.transcode_complete"
+    transcode_duration_seconds: int
+    output_path: str
+
+
+class JobFailedEvent(JobEventBase):
+    """Terminal failure of either the rip or transcode phase.
+    ``error_message`` is a one-line summary suitable for a notification
+    title or body; stack traces and structured detail belong in the log
+    history, not here. ``error_code`` is populated when the failure
+    classifier returned one; ``None`` otherwise."""
+    event_key: Literal["job.failed"] = "job.failed"
+    phase: Literal["rip", "transcode"]
+    error_message: str
+    error_code: str | None = None
