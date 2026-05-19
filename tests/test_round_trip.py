@@ -28,3 +28,52 @@ def test_legacy_webhook_round_trip():
     dumped = json.loads(m.model_dump_json())
     reparsed = TranscodeJobConfig.model_validate(dumped)
     assert reparsed == m
+
+
+def test_job_started_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobStartedEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_started_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobStartedEvent)
+    # Round-trip: dump and re-validate.
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
+
+
+def test_job_rip_complete_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobRipCompleteEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_rip_complete_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobRipCompleteEvent)
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
+
+
+def test_job_transcode_complete_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobTranscodeCompleteEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_transcode_complete_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobTranscodeCompleteEvent)
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
+
+
+def test_job_failed_event_round_trip():
+    from pydantic import TypeAdapter
+    from arm_contracts import NotificationEvent
+    from arm_contracts.notification_event import JobFailedEvent
+    adapter = TypeAdapter(NotificationEvent)
+    raw = json.loads((FIXTURES / "job_failed_event.json").read_text())
+    parsed = adapter.validate_python(raw)
+    assert isinstance(parsed, JobFailedEvent)
+    again = adapter.validate_python(json.loads(parsed.model_dump_json()))
+    assert again == parsed
