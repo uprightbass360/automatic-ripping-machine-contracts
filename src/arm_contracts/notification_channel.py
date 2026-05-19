@@ -61,6 +61,8 @@ EVENT_KEYS = Literal[
     "job.rip_complete",
     "job.transcode_complete",
     "job.failed",
+    "job.manual_wait_required",
+    "job.duplicate_detected",
 ]
 """The set of event_key values a channel may subscribe to. Must stay
 in sync with ``notification_event.NotificationEvent``'s discriminator

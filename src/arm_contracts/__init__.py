@@ -40,8 +40,10 @@ from arm_contracts.notification_channel import (
     WebhookChannelConfig,
 )
 from arm_contracts.notification_event import (
+    JobDuplicateDetectedEvent,
     JobEventBase,
     JobFailedEvent,
+    JobManualWaitRequiredEvent,
     JobRipCompleteEvent,
     JobStartedEvent,
     JobTranscodeCompleteEvent,
@@ -86,8 +88,10 @@ __all__ = [
     "EVENT_KEYS",
     "ExpectedTitle",
     "Job",
+    "JobDuplicateDetectedEvent",
     "JobEventBase",
     "JobFailedEvent",
+    "JobManualWaitRequiredEvent",
     "JobProgressState",
     "JobRipCompleteEvent",
     "JobStartedEvent",
