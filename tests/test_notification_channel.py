@@ -238,3 +238,15 @@ def test_channel_apprise_channel_re_exports():
     assert Channel is not None
     assert ChannelCreate is not None
     assert ChannelUpdate is not None
+
+
+def test_apprise_channel_config_with_service_id():
+    from arm_contracts.notification_channel import AppriseChannelConfig
+    c = AppriseChannelConfig(url="discord://id/token", service_id="discord")
+    assert c.service_id == "discord"
+
+
+def test_apprise_channel_config_service_id_optional():
+    from arm_contracts.notification_channel import AppriseChannelConfig
+    c = AppriseChannelConfig(url="discord://id/token")
+    assert c.service_id is None

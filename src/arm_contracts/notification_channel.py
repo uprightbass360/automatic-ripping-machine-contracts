@@ -21,10 +21,12 @@ class AppriseChannelConfig(BaseModel):
     """An Apprise URL such as ``discord://id/token`` or
     ``pover://user@token``. neu's compose-url endpoint assembles the
     final string from the catalog form; the user may also paste a raw
-    URL directly."""
+    URL directly. ``service_id`` records which catalog service produced
+    the URL so the editor can re-render that service's fields."""
     model_config = ConfigDict(extra="ignore")
     type: Literal["apprise"] = "apprise"
     url: str
+    service_id: str | None = None
 
 
 class WebhookChannelConfig(BaseModel):
