@@ -250,3 +250,25 @@ def test_apprise_channel_config_service_id_optional():
     from arm_contracts.notification_channel import AppriseChannelConfig
     c = AppriseChannelConfig(url="discord://id/token")
     assert c.service_id is None
+
+
+def test_apprise_channel_config_with_fields():
+    from arm_contracts.notification_channel import AppriseChannelConfig
+    c = AppriseChannelConfig(url="discord://1/2", service_id="discord",
+                              fields={"webhook_id": "1", "webhook_token": "2"})
+    assert c.fields == {"webhook_id": "1", "webhook_token": "2"}
+
+
+def test_apprise_channel_config_fields_accepts_bool_and_int():
+    """Apprise advanced fields include bools (tts) and ints (thread).
+    fields must accept JSON primitives, not str-only."""
+    from arm_contracts.notification_channel import AppriseChannelConfig
+    c = AppriseChannelConfig(url="discord://1/2", service_id="discord",
+                              fields={"webhook_id": "1", "tts": True, "thread": 5})
+    assert c.fields == {"webhook_id": "1", "tts": True, "thread": 5}
+
+
+def test_apprise_channel_config_fields_optional():
+    from arm_contracts.notification_channel import AppriseChannelConfig
+    c = AppriseChannelConfig(url="discord://1/2")
+    assert c.fields is None

@@ -22,11 +22,16 @@ class AppriseChannelConfig(BaseModel):
     ``pover://user@token``. neu's compose-url endpoint assembles the
     final string from the catalog form; the user may also paste a raw
     URL directly. ``service_id`` records which catalog service produced
-    the URL so the editor can re-render that service's fields."""
+    the URL so the editor can re-render that service's fields.
+    ``fields`` carries the per-field values (e.g. {"webhook_id": "...",
+    "webhook_token": "..."}). Secrets should be masked by the caller;
+    arm-neu's API layer uses the literal "<hidden>" sentinel for that
+    round-trip."""
     model_config = ConfigDict(extra="ignore")
     type: Literal["apprise"] = "apprise"
     url: str
     service_id: str | None = None
+    fields: dict[str, str | int | float | bool] | None = None
 
 
 class WebhookChannelConfig(BaseModel):
