@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v4.0.0...v4.1.0) (2026-05-26)
+
+
+### Features
+
+* **notifications:** add optional fields map to AppriseChannelConfig ([3c73257](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/3c732572ab4bf0fcff5f94eec4c0e9f92f1e8b71))
+* **notifications:** add optional service_id to AppriseChannelConfig ([c86a87d](https://github.com/uprightbass360/automatic-ripping-machine-contracts/commit/c86a87d437ccd3339d7a9ac3e9c8540cf1b1356e))
+
 ## [4.0.0](https://github.com/uprightbass360/automatic-ripping-machine-contracts/compare/v3.2.0...v4.0.0) (2026-05-19)
 
 
