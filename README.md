@@ -2,6 +2,13 @@
 [![GitHub release](https://img.shields.io/github/v/release/uprightbass360/automatic-ripping-machine-contracts)](https://github.com/uprightbass360/automatic-ripping-machine-contracts/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+> [!IMPORTANT]
+> **This repository will be archived soon.**
+>
+> Development of the ARM (neu) ecosystem is moving to the upstream [Automatic Ripping Machine](https://github.com/automatic-ripping-machine/automatic-ripping-machine) project. Keep an eye on that repository in the very near future for what comes next.
+>
+> Once archived, this repository stays available read-only, but it will no longer receive updates or accept new issues and pull requests. Thank you to everyone who used, tested, and contributed.
+
 # arm-contracts
 
 Part of the [Automatic Ripping Machine (neu) ecosystem](#related-projects). Shared Pydantic models for the cross-service wire contract between the ripper, the UI dashboard, and the GPU transcoder.
